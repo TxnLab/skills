@@ -27,3 +27,5 @@ bun run validate        # Validate all SKILL.md files
 - Tests use `bun:test`, test files go in `tests/`
 - Commit messages follow conventional commits
 - Bun is the only runtime — do not use npm/yarn/pnpm
+
+See `README.md` for the full CLI reference, supported agents, and contributing guide.

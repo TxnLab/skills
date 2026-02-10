@@ -1,6 +1,6 @@
 # Contributing Agent Instructions
 
-Instructions for AI agents (Claude Code, Codex, Cursor) contributing to this repo.
+Instructions for AI agents (Claude Code, Codex, Cursor, OpenCode) contributing to this repo.
 
 ## Repository Structure
 

@@ -21,7 +21,11 @@ Skills are reusable instruction packages that extend AI coding agents (Claude Co
 npx @txnlab/skills add nfd
 ```
 
-That's it. The `nfd` skill is now available to your AI agent.
+That's it. The `nfd` skill is now available to your AI agent. If no agent is auto-detected, specify one with `--agent`:
+
+```bash
+npx @txnlab/skills add nfd --agent claude-code
+```
 
 ## Available Skills
 
@@ -96,6 +100,8 @@ npx @txnlab/skills dev unlink --all         # Remove dev symlinks
 
 ## Installation
 
+Requires Node.js >= 18.
+
 ### Via npx (recommended)
 
 ```bash
@@ -132,10 +138,10 @@ cd skills
 # Install dependencies
 bun install
 
-# Symlink all skills for testing
+# Symlink all skills for testing ("bun run dev" runs the CLI from source)
 bun run dev dev link --all
 
-# Edit skills — changes are picked up by Claude Code immediately
+# Edit skills — changes are picked up immediately via symlinks
 
 # Validate your work
 bun run dev validate
