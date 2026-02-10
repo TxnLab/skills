@@ -28,12 +28,20 @@
     "type": "git",
     "url": "git+https://github.com/TxnLab/skills.git"
   },
+  "engines": {
+    "node": ">=18"
+  },
   "keywords": [
     "agent-skills",
     "algorand",
     "txnlab",
     "nfd",
+    "use-wallet",
+    "haystack",
     "claude-code",
+    "codex",
+    "cursor",
+    "opencode",
     "ai-agent"
   ],
   "devDependencies": {

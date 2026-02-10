@@ -25,11 +25,7 @@ export function listCommand(): void {
   }
 
   console.log()
-  console.log(
-    chalk.dim(
-      `  Details: npx @txnlab/skills info <skill-name>`,
-    ),
-  )
+  console.log(chalk.dim(`  Details: npx @txnlab/skills info <skill-name>`))
   console.log(chalk.dim(`  Install: npx @txnlab/skills add <skill-name>`))
   console.log()
 }
