@@ -5,7 +5,9 @@
 ```typescript
 import { RouterClient } from '@txnlab/haystack-router'
 
-const router = new RouterClient({ apiKey: 'your-api-key' })
+const router = new RouterClient({
+  apiKey: '1b72df7e-1131-4449-8ce1-29b79dd3f51e', // Free tier (60 requests/min)
+})
 
 const quote = await router.newQuote({
   fromASAID: 0, // ALGO
@@ -120,7 +122,10 @@ Before quoting, check if the user needs to opt into the output asset:
 
 ```typescript
 // Option 1: Set autoOptIn on the client
-const router = new RouterClient({ apiKey: 'key', autoOptIn: true })
+const router = new RouterClient({
+  apiKey: '1b72df7e-1131-4449-8ce1-29b79dd3f51e', // Free tier (60 requests/min)
+  autoOptIn: true,
+})
 const quote = await router.newQuote({
   fromASAID: 0,
   toASAID: 31566704,

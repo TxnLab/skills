@@ -1,5 +1,16 @@
 # Configuration
 
+## API Key Tiers
+
+| Tier           | Key                                    | Rate Limit      | Use Case                                      |
+| -------------- | -------------------------------------- | --------------- | --------------------------------------------- |
+| **Free**       | `1b72df7e-1131-4449-8ce1-29b79dd3f51e` | 60 requests/min | Development, testing, low-volume integrations |
+| **Production** | Request from support@txnlab.dev        | Higher limits   | Production applications                       |
+
+The free tier key requires no registration and works immediately. The rate limit applies to all API calls (both `fetchQuote` and `fetchExecuteSwapTxns`), not just quotes.
+
+For production integrations with higher rate limits, contact support@txnlab.dev for a dedicated key.
+
 ## RouterClient Options
 
 ```typescript
@@ -7,7 +18,7 @@ import { RouterClient } from '@txnlab/haystack-router'
 
 const router = new RouterClient({
   // Required
-  apiKey: 'your-api-key',
+  apiKey: '1b72df7e-1131-4449-8ce1-29b79dd3f51e', // Free tier (60 requests/min)
 
   // Optional
   apiBaseUrl: undefined, // Override API endpoint (SDK manages defaults)
@@ -27,7 +38,9 @@ const router = new RouterClient({
 ### MainNet (Default)
 
 ```typescript
-const router = new RouterClient({ apiKey: 'your-api-key' })
+const router = new RouterClient({
+  apiKey: '1b72df7e-1131-4449-8ce1-29b79dd3f51e',
+})
 ```
 
 Uses default Nodely MainNet algod endpoint.
@@ -36,7 +49,7 @@ Uses default Nodely MainNet algod endpoint.
 
 ```typescript
 const router = new RouterClient({
-  apiKey: 'your-api-key',
+  apiKey: '1b72df7e-1131-4449-8ce1-29b79dd3f51e', // Free tier (60 requests/min)
   algodUri: 'https://testnet-api.4160.nodely.dev/',
 })
 ```
@@ -45,7 +58,7 @@ const router = new RouterClient({
 
 ```typescript
 const router = new RouterClient({
-  apiKey: 'your-api-key',
+  apiKey: '1b72df7e-1131-4449-8ce1-29b79dd3f51e', // Free tier (60 requests/min)
   algodUri: 'http://localhost:4001',
   algodToken:
     'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
@@ -78,7 +91,7 @@ Slippage is verified on the **final output** of the swap, not on individual hops
 
 ```typescript
 const router = new RouterClient({
-  apiKey: 'your-api-key',
+  apiKey: '1b72df7e-1131-4449-8ce1-29b79dd3f51e', // Free tier (60 requests/min)
   feeBps: 15, // 0.15% output fee
 })
 ```
@@ -94,7 +107,7 @@ Earn 25% of swap fees by setting a referrer address:
 
 ```typescript
 const router = new RouterClient({
-  apiKey: 'your-api-key',
+  apiKey: '1b72df7e-1131-4449-8ce1-29b79dd3f51e', // Free tier (60 requests/min)
   referrerAddress: 'YOUR_ALGORAND_ADDRESS',
 })
 ```
@@ -107,7 +120,7 @@ When `autoOptIn: true`, the SDK automatically checks if the user needs to opt in
 
 ```typescript
 const router = new RouterClient({
-  apiKey: 'your-api-key',
+  apiKey: '1b72df7e-1131-4449-8ce1-29b79dd3f51e', // Free tier (60 requests/min)
   autoOptIn: true,
 })
 
@@ -133,7 +146,7 @@ const autoOptOut = new AutoOptOutMiddleware({
 })
 
 const router = new RouterClient({
-  apiKey: 'your-api-key',
+  apiKey: '1b72df7e-1131-4449-8ce1-29b79dd3f51e', // Free tier (60 requests/min)
   middleware: [autoOptOut],
 })
 ```
@@ -144,7 +157,7 @@ See [api-reference.md](api-reference.md) for the `SwapMiddleware` interface.
 
 ```typescript
 const router = new RouterClient({
-  apiKey: 'your-api-key',
+  apiKey: '1b72df7e-1131-4449-8ce1-29b79dd3f51e', // Free tier (60 requests/min)
   debugLevel: 'info',
 })
 ```
