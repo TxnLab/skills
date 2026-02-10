@@ -1,0 +1,49 @@
+{
+  "name": "@txnlab/skills",
+  "version": "0.1.0",
+  "description": "Agent skills for TxnLab's Algorand ecosystem",
+  "type": "module",
+  "bin": {
+    "txnlab-skills": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "skills"
+  ],
+  "scripts": {
+    "build": "bun build src/cli.ts --outdir dist --target node",
+    "dev": "bun run src/cli.ts",
+    "test": "bun test",
+    "lint": "eslint . && prettier --check .",
+    "lint:fix": "eslint --fix . && prettier --write .",
+    "validate": "bun run src/cli.ts validate",
+    "prepublishOnly": "bun run build && bun run test && bun run validate"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TxnLab/skills.git"
+  },
+  "keywords": [
+    "agent-skills",
+    "algorand",
+    "txnlab",
+    "nfd",
+    "claude-code",
+    "ai-agent"
+  ],
+  "devDependencies": {
+    "@types/bun": "latest",
+    "eslint": "^9",
+    "eslint-config-prettier": "^10",
+    "jiti": "^2.6.1",
+    "prettier": "^3",
+    "typescript": "^5",
+    "typescript-eslint": "^8"
+  },
+  "dependencies": {
+    "chalk": "^5",
+    "commander": "^13",
+    "gray-matter": "^4"
+  }
+}
