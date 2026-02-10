@@ -17,12 +17,16 @@
     "lint": "eslint . && prettier --check .",
     "lint:fix": "eslint --fix . && prettier --write .",
     "validate": "bun run src/cli.ts validate",
-    "prepublishOnly": "bun run build && bun run test && bun run validate"
+    "publint": "publint"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/TxnLab/skills.git"
+    "url": "git+https://github.com/TxnLab/skills.git"
   },
   "keywords": [
     "agent-skills",
@@ -33,11 +37,19 @@
     "ai-agent"
   ],
   "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^12.0.5",
+    "@semantic-release/npm": "^13.1.4",
+    "@semantic-release/release-notes-generator": "^14.1.0",
     "@types/bun": "latest",
     "eslint": "^9",
     "eslint-config-prettier": "^10",
     "jiti": "^2.6.1",
     "prettier": "^3",
+    "publint": "^0.3.17",
+    "semantic-release": "^25.0.3",
     "typescript": "^5",
     "typescript-eslint": "^8"
   },
