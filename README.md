@@ -21,7 +21,11 @@ Skills are reusable instruction packages that extend AI coding agents (Claude Co
 npx @txnlab/skills add nfd
 ```
 
-That's it. The `nfd` skill is now available to your AI agent.
+That's it. The `nfd` skill is now available to your AI agent. If no agent is auto-detected, specify one with `--agent`:
+
+```bash
+npx @txnlab/skills add nfd --agent claude-code
+```
 
 ## Available Skills
 
@@ -30,7 +34,7 @@ That's it. The `nfd` skill is now available to your AI agent.
 | `nfd`             | Work with NFDomains, the Algorand Name Service for .algo domains |
 | `use-wallet`      | Integrate Algorand wallet connections with @txnlab/use-wallet    |
 | `haystack-router` | Route and execute optimal swaps on Algorand DEXes via Haystack   |
-| `skill-creator`   | Create new Agent Skills following the Agent Skills specification |
+| `skill-creator`   | Guide for creating effective Agent Skills following the spec     |
 
 ## CLI Reference
 
@@ -61,6 +65,8 @@ npx @txnlab/skills add nfd --local          # Install to project-level directory
 ```bash
 npx @txnlab/skills remove <skill-name>
 npx @txnlab/skills remove --all
+npx @txnlab/skills remove nfd -a claude-code   # Target specific agent
+npx @txnlab/skills remove nfd --local          # Remove from project-level directory
 ```
 
 ### Validate skills
@@ -75,22 +81,26 @@ npx @txnlab/skills validate <skill-name>    # Validate one
 ```bash
 npx @txnlab/skills dev link <skill-name>    # Symlink skill for local dev
 npx @txnlab/skills dev link --all           # Symlink all skills
+npx @txnlab/skills dev link nfd --force     # Overwrite existing non-symlink target
 npx @txnlab/skills dev unlink --all         # Remove dev symlinks
 ```
 
 ### Flags
 
-| Flag                  | Description                                 |
-| --------------------- | ------------------------------------------- |
-| `-a, --agent <agent>` | Target specific agent (repeatable)          |
-| `-g, --global`        | Install to global skill directory (default) |
-| `-l, --local`         | Install to project-level skill directory    |
-| `--all`               | Apply to all skills                         |
-| `-y, --yes`           | Skip confirmation prompts                   |
-| `-v, --version`       | Show version                                |
-| `-h, --help`          | Show help                                   |
+| Flag                  | Commands         | Description                            |
+| --------------------- | ---------------- | -------------------------------------- |
+| `-a, --agent <agent>` | add, remove, dev | Target specific agent (repeatable)     |
+| `-g, --global`        | add, remove      | Use global skill directory (default)   |
+| `-l, --local`         | add, remove      | Use project-level skill directory      |
+| `--all`               | add, remove, dev | Apply to all skills                    |
+| `--force`             | dev link         | Overwrite existing non-symlink targets |
+| `-y, --yes`           | remove           | Skip confirmation prompts              |
+| `-v, --version`       | (global)         | Show version                           |
+| `-h, --help`          | (all)            | Show help                              |
 
 ## Installation
+
+Requires Node.js >= 18.
 
 ### Via npx (recommended)
 
@@ -128,10 +138,10 @@ cd skills
 # Install dependencies
 bun install
 
-# Symlink all skills for testing
+# Symlink all skills for testing ("bun run dev" runs the CLI from source)
 bun run dev dev link --all
 
-# Edit skills — changes are picked up by Claude Code immediately
+# Edit skills — changes are picked up immediately via symlinks
 
 # Validate your work
 bun run dev validate

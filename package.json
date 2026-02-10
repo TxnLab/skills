@@ -24,6 +24,7 @@
     "provenance": true
   },
   "license": "MIT",
+  "homepage": "https://github.com/TxnLab/skills#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TxnLab/skills.git"
