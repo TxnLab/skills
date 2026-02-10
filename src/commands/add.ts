@@ -56,8 +56,10 @@ export function addCommand(
     for (const agent of targetAgents) {
       const result = installSkill(skill, agent, { local: isLocal })
       if (result.success) {
+        const method =
+          result.method === 'copy' ? chalk.dim(' (copied)') : ''
         console.log(
-          `  ${chalk.green('✔')} ${agent.displayName} — ${result.skillName} → ${result.targetPath}`,
+          `  ${chalk.green('✔')} ${agent.displayName} — ${result.skillName} → ${result.targetPath}${method}`,
         )
       } else {
         console.error(
