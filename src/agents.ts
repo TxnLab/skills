@@ -1,6 +1,7 @@
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { homedir } from 'node:os'
+import chalk from 'chalk'
 import type { Agent } from './types.ts'
 
 const home = homedir()
@@ -57,4 +58,24 @@ export function findAgent(name: string): Agent | undefined {
 
 export function getAgentNames(): string[] {
   return agents.map((a) => a.name)
+}
+
+export function resolveAgents(agentNames?: string[]): Agent[] {
+  if (agentNames && agentNames.length > 0) {
+    const resolved: Agent[] = []
+    for (const name of agentNames) {
+      const agent = findAgent(name)
+      if (agent) {
+        resolved.push(agent)
+      } else {
+        const valid = getAgentNames().join(', ')
+        console.warn(
+          chalk.yellow(`  Unknown agent: "${name}". Valid agents: ${valid}`),
+        )
+      }
+    }
+    return resolved
+  }
+
+  return detectAgents()
 }

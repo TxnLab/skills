@@ -1,9 +1,8 @@
 import chalk from 'chalk'
 import { discoverSkills } from '../skills.ts'
-import { detectAgents, findAgent } from '../agents.ts'
+import { resolveAgents } from '../agents.ts'
 import { uninstallSkill } from '../installer.ts'
 import { confirm } from '../prompt.ts'
-import type { Agent } from '../types.ts'
 
 export async function removeCommand(
   skillNames: string[],
@@ -68,21 +67,4 @@ export async function removeCommand(
   }
 
   console.log()
-}
-
-function resolveAgents(agentNames?: string[]): Agent[] {
-  if (agentNames && agentNames.length > 0) {
-    const resolved: Agent[] = []
-    for (const name of agentNames) {
-      const agent = findAgent(name)
-      if (agent) {
-        resolved.push(agent)
-      } else {
-        console.warn(chalk.yellow(`  Unknown agent: "${name}"`))
-      }
-    }
-    return resolved
-  }
-
-  return detectAgents()
 }

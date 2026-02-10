@@ -1,8 +1,7 @@
 import chalk from 'chalk'
 import { discoverSkills, findSkill } from '../skills.ts'
-import { detectAgents, findAgent } from '../agents.ts'
+import { resolveAgents } from '../agents.ts'
 import { devLink, devUnlink } from '../installer.ts'
-import type { Agent } from '../types.ts'
 
 export function devLinkCommand(
   skillNames: string[],
@@ -95,21 +94,4 @@ export function devUnlinkCommand(
       }
     }
   }
-}
-
-function resolveAgents(agentNames?: string[]): Agent[] {
-  if (agentNames && agentNames.length > 0) {
-    const resolved: Agent[] = []
-    for (const name of agentNames) {
-      const agent = findAgent(name)
-      if (agent) {
-        resolved.push(agent)
-      } else {
-        console.warn(chalk.yellow(`  Unknown agent: "${name}"`))
-      }
-    }
-    return resolved
-  }
-
-  return detectAgents()
 }
