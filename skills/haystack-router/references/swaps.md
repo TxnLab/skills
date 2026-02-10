@@ -5,7 +5,9 @@
 ```typescript
 import { RouterClient } from '@txnlab/haystack-router'
 
-const router = new RouterClient({ apiKey: 'your-api-key' })
+const router = new RouterClient({
+  apiKey: '1b72df7e-1131-4449-8ce1-29b79dd3f51e', // Free tier (60 requests/min)
+})
 
 // 1. Get a quote
 const quote = await router.newQuote({
