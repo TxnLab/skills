@@ -16,7 +16,8 @@ export function listCommand(): void {
   const maxNameLen = Math.max(...skills.map((s) => s.name.length))
   const indent = 2
   const gap = 2
-  const maxDescLen = 80 - indent - maxNameLen - gap
+  const termWidth = process.stdout.columns || 80
+  const maxDescLen = termWidth - indent - maxNameLen - gap
 
   for (const skill of skills) {
     const name = chalk.cyan(skill.name.padEnd(maxNameLen + gap))

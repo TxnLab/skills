@@ -65,6 +65,7 @@
   "dependencies": {
     "chalk": "^5",
     "commander": "^13",
-    "gray-matter": "^4"
+    "gray-matter": "^4",
+    "wrap-ansi": "^9.0.2"
   }
 }
