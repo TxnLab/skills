@@ -30,7 +30,7 @@ That's it. The `nfd` skill is now available to your AI agent.
 | `nfd`             | Work with NFDomains, the Algorand Name Service for .algo domains |
 | `use-wallet`      | Integrate Algorand wallet connections with @txnlab/use-wallet    |
 | `haystack-router` | Route and execute optimal swaps on Algorand DEXes via Haystack   |
-| `skill-creator`   | Create new Agent Skills following the Agent Skills specification |
+| `skill-creator`   | Guide for creating effective Agent Skills following the spec     |
 
 ## CLI Reference
 
