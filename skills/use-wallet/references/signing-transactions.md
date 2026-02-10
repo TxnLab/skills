@@ -11,6 +11,31 @@ The `useWallet` hook/composable/primitive provides two methods for signing trans
 
 Accepts an array of `algosdk.Transaction` objects, encoded transactions (`Uint8Array`), or arrays of either (for groups). Returns `Promise<(Uint8Array | null)[]>` where `null` indicates an unsigned transaction.
 
+### Vanilla JS/TS
+
+```typescript
+import { WalletManager } from '@txnlab/use-wallet'
+import algosdk from 'algosdk'
+
+async function sendTransaction(manager: WalletManager) {
+  const activeAddress = manager.activeAddress
+  if (!activeAddress) return
+
+  const suggestedParams = await manager.algodClient.getTransactionParams().do()
+  const transaction = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+    sender: activeAddress,
+    receiver: activeAddress,
+    amount: 0,
+    suggestedParams,
+  })
+
+  const signedTxns = await manager.signTransactions([transaction])
+  const { txid } = await manager.algodClient.sendRawTransaction(signedTxns).do()
+  const result = await algosdk.waitForConfirmation(manager.algodClient, txid, 4)
+  console.log(`Confirmed at round ${result['confirmed-round']}`)
+}
+```
+
 ### React
 
 ```tsx
@@ -205,11 +230,12 @@ function CallWithAlgoKit() {
 
 ## Framework Access Patterns Summary
 
-| Framework | activeAddress           | algodClient           | transactionSigner   |
-| --------- | ----------------------- | --------------------- | ------------------- |
-| React     | `activeAddress`         | `algodClient`         | `transactionSigner` |
-| Vue       | `activeAddress.value`   | `algodClient.value`   | `transactionSigner` |
-| SolidJS   | `activeAddress()`       | `algodClient()`       | `transactionSigner` |
-| Svelte    | `activeAddress.current` | `algodClient.current` | `transactionSigner` |
+| Framework | activeAddress           | algodClient           | transactionSigner            |
+| --------- | ----------------------- | --------------------- | ---------------------------- |
+| Vanilla   | `manager.activeAddress` | `manager.algodClient` | `manager.transactionSigner`  |
+| React     | `activeAddress`         | `algodClient`         | `transactionSigner`          |
+| Vue       | `activeAddress.value`   | `algodClient.value`   | `transactionSigner`          |
+| SolidJS   | `activeAddress()`       | `algodClient()`       | `transactionSigner`          |
+| Svelte    | `activeAddress.current` | `algodClient.current` | `transactionSigner`          |
 
 `transactionSigner` is the same across all frameworks — not wrapped in reactive state.
