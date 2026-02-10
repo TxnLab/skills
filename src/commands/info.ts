@@ -1,5 +1,6 @@
 import chalk from 'chalk'
 import { findSkill } from '../skills.ts'
+import { wrapText } from '../format.ts'
 
 export function infoCommand(skillName: string): void {
   const skill = findSkill(skillName)
@@ -15,7 +16,7 @@ export function infoCommand(skillName: string): void {
   console.log()
   console.log(chalk.bold(skill.name))
   console.log()
-  console.log(`  ${skill.description}`)
+  console.log(wrapText(skill.description, 2))
   console.log()
 
   if (skill.metadata) {

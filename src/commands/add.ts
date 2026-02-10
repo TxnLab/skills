@@ -2,6 +2,7 @@ import chalk from 'chalk'
 import { findSkill, discoverSkills } from '../skills.ts'
 import { resolveAgents } from '../agents.ts'
 import { installSkill } from '../installer.ts'
+import { wrapText } from '../format.ts'
 
 export function addCommand(
   skillNames: string[],
@@ -57,7 +58,7 @@ export function addCommand(
 
     console.log()
     console.log(`  ${chalk.bold('Installing:')} ${skill.name}`)
-    console.log(`  ${chalk.dim('→')} ${skill.description}`)
+    console.log(wrapText(`${chalk.dim('→')} ${skill.description}`, 4))
     console.log()
 
     for (const agent of targetAgents) {
