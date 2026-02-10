@@ -25,12 +25,12 @@ That's it. The `nfd` skill is now available to your AI agent.
 
 ## Available Skills
 
-| Skill             | Description                                                      | Status      |
-| ----------------- | ---------------------------------------------------------------- | ----------- |
-| `nfd`             | Work with NFDomains, the Algorand Name Service for .algo domains | Coming soon |
-| `use-wallet`      | Integrate Algorand wallet connections with @txnlab/use-wallet    | Coming soon |
-| `haystack-router` | Route and execute optimal swaps on Algorand DEXes via Haystack   | Coming soon |
-| `skill-creator`   | Create new Agent Skills following the Agent Skills specification | Ready       |
+| Skill             | Description                                                      |
+| ----------------- | ---------------------------------------------------------------- |
+| `nfd`             | Work with NFDomains, the Algorand Name Service for .algo domains |
+| `use-wallet`      | Integrate Algorand wallet connections with @txnlab/use-wallet    |
+| `haystack-router` | Route and execute optimal swaps on Algorand DEXes via Haystack   |
+| `skill-creator`   | Create new Agent Skills following the Agent Skills specification |
 
 ## CLI Reference
 
