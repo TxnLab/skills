@@ -61,6 +61,8 @@ npx @txnlab/skills add nfd --local          # Install to project-level directory
 ```bash
 npx @txnlab/skills remove <skill-name>
 npx @txnlab/skills remove --all
+npx @txnlab/skills remove nfd -a claude-code   # Target specific agent
+npx @txnlab/skills remove nfd --local          # Remove from project-level directory
 ```
 
 ### Validate skills
@@ -75,20 +77,22 @@ npx @txnlab/skills validate <skill-name>    # Validate one
 ```bash
 npx @txnlab/skills dev link <skill-name>    # Symlink skill for local dev
 npx @txnlab/skills dev link --all           # Symlink all skills
+npx @txnlab/skills dev link nfd --force     # Overwrite existing non-symlink target
 npx @txnlab/skills dev unlink --all         # Remove dev symlinks
 ```
 
 ### Flags
 
-| Flag                  | Description                                 |
-| --------------------- | ------------------------------------------- |
-| `-a, --agent <agent>` | Target specific agent (repeatable)          |
-| `-g, --global`        | Install to global skill directory (default) |
-| `-l, --local`         | Install to project-level skill directory    |
-| `--all`               | Apply to all skills                         |
-| `-y, --yes`           | Skip confirmation prompts                   |
-| `-v, --version`       | Show version                                |
-| `-h, --help`          | Show help                                   |
+| Flag                  | Commands              | Description                                    |
+| --------------------- | --------------------- | ---------------------------------------------- |
+| `-a, --agent <agent>` | add, remove, dev      | Target specific agent (repeatable)             |
+| `-g, --global`        | add, remove           | Use global skill directory (default)           |
+| `-l, --local`         | add, remove           | Use project-level skill directory              |
+| `--all`               | add, remove, dev      | Apply to all skills                            |
+| `--force`             | dev link              | Overwrite existing non-symlink targets         |
+| `-y, --yes`           | remove                | Skip confirmation prompts                      |
+| `-v, --version`       | (global)              | Show version                                   |
+| `-h, --help`          | (all)                 | Show help                                      |
 
 ## Installation
 
