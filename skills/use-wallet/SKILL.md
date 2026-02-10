@@ -4,9 +4,10 @@ description: >-
   Integrate Algorand/AVM wallet connections using @txnlab/use-wallet v4.x.
   Use when building dApps that need wallet connectivity (Pera, Defly, Lute,
   Kibisis, Exodus, WalletConnect, etc.), transaction signing, data signing
-  (ARC-60/SIWA), network switching, or wallet state management in React, Vue,
-  SolidJS, or Svelte applications. Also covers the companion UI component
-  library @txnlab/use-wallet-ui-react for drop-in wallet buttons and menus.
+  (ARC-60/SIWA), network switching, or wallet state management in vanilla
+  JS/TS, React, Vue, SolidJS, or Svelte applications. Also covers the
+  companion UI component library @txnlab/use-wallet-ui-react for drop-in
+  wallet buttons and menus.
 ---
 
 # @txnlab/use-wallet
@@ -34,6 +35,7 @@ Read the reference file that matches the developer's task:
 
 ### Framework-Specific Integration
 
+- **Vanilla JS/TS (no framework)**: [references/vanilla.md](references/vanilla.md) — WalletManager direct usage, BaseWallet subscribe, no provider wrapper
 - **React**: [references/react.md](references/react.md) — WalletProvider, useWallet, useNetwork hooks
 - **Vue**: [references/vue.md](references/vue.md) — WalletManagerPlugin, useWallet/useNetwork composables
 - **SolidJS**: [references/solid.md](references/solid.md) — WalletProvider, useWallet/useNetwork primitives (signals)
