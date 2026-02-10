@@ -63,8 +63,8 @@ program
   .option('-l, --local', 'Remove from project-level skill directory')
   .option('--all', 'Remove all skills')
   .option('-y, --yes', 'Skip confirmation prompts')
-  .action((skillNames: string[], options) => {
-    removeCommand(skillNames, options)
+  .action(async (skillNames: string[], options) => {
+    await removeCommand(skillNames, options)
   })
 
 program
