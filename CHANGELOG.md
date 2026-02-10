@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/TxnLab/skills/compare/v1.0.0...v1.1.0) (2026-02-10)
+
+
+### Features
+
+* **cli:** add terminal-aware text wrapping for descriptions ([#5](https://github.com/TxnLab/skills/issues/5)) ([ea834a6](https://github.com/TxnLab/skills/commit/ea834a6f56bf4200219ffafd9d902af29ba9ac58))
+
 # 1.0.0 (2026-02-10)
 
 
