@@ -1,42 +1,52 @@
-# Contributing Agent Instructions
+# AGENTS.md
 
-Instructions for AI agents (Claude Code, Codex, Cursor, OpenCode) contributing to this repo.
+This file provides guidance to AI coding agents working with code in this repository.
 
-## Repository Structure
+## Project Overview
 
-- `skills/` — Agent skill directories, each containing a `SKILL.md` with YAML frontmatter and Markdown instructions
-- `src/` — CLI source (TypeScript, built with Bun)
-  - `src/cli.ts` — Entry point, command routing via Commander
-  - `src/commands/` — Individual command implementations (list, add, remove, info, dev, validate)
-  - `src/agents.ts` — Agent definitions, detection logic, install paths
-  - `src/installer.ts` — Install/uninstall/symlink logic
-  - `src/skills.ts` — Skill discovery and SKILL.md parsing (uses gray-matter)
-  - `src/validator.ts` — SKILL.md validation against the Agent Skills spec
-  - `src/types.ts` — Shared TypeScript types
-- `tests/` — Tests using `bun:test`
+This is a documentation repository containing [Agent Skills](https://agentskills.io/specification) for TxnLab's Algorand ecosystem. Skills extend AI coding agents with specialized knowledge about NFDomains, use-wallet, and Haystack Router. There is no build step or compiled output — the deliverables are markdown files.
 
-## Build, Test, Lint
+## Commands
 
 ```bash
-bun install             # Install dependencies (always use bun, never npm/yarn/pnpm)
-bun run build           # Build CLI to dist/
-bun test                # Run tests
-bun run lint            # Check formatting (Prettier) and linting (ESLint)
-bun run lint:fix        # Auto-fix
-bun run validate        # Validate all SKILL.md files
+# Validate all skills
+node scripts/validate.js
+
+# Validate a specific skill
+node scripts/validate.js <skill-name>
 ```
 
-## Skill Authoring
+There are no build, test, or lint commands. Validation is the only check.
 
-1. Read `skills/skill-creator/SKILL.md` for the skill creation process
-2. Create a new directory under `skills/<skill-name>/`
-3. Write a `SKILL.md` with valid YAML frontmatter (`name`, `description` required)
-4. Run `bun run validate` to check your skill
-5. Submit a PR — validation runs in CI
+## Architecture
 
-## Testing Conventions
+Each skill lives in `skills/<skill-name>/` and follows the Agent Skills specification:
 
-- Test files: `tests/<module>.test.ts`
-- Use `bun:test` (describe, test, expect)
-- Tests should be self-contained — create temp dirs, clean up in afterAll
-- Cover both happy paths and edge cases
+- **`SKILL.md`** — Entry point with YAML frontmatter (`name` and `description` required). The `name` field must match the directory name.
+- **`references/`** — Detailed markdown guides for specific tasks (API usage, framework integration, etc.)
+- **`assets/`** — Optional static assets (none currently used)
+
+The validation script (`scripts/validate.js`) checks frontmatter structure using only Node.js built-ins (no dependencies). It parses YAML frontmatter manually and verifies required fields.
+
+## Current Skills
+
+| Skill | Package |
+| --- | --- |
+| `nfd` | `@txnlab/nfd-sdk` — Algorand Name Service (.algo domains) |
+| `use-wallet` | `@txnlab/use-wallet` v4.x — Multi-framework wallet connections |
+| `haystack-router` | `@txnlab/haystack-router` — DEX aggregator and swap routing |
+
+## Adding a New Skill
+
+1. Create `skills/<skill-name>/SKILL.md` with YAML frontmatter containing `name` (matching directory) and `description`
+2. Add `references/*.md` files for detailed task-specific documentation
+3. Run `node scripts/validate.js` to verify
+4. Use [conventional commits](https://www.conventionalcommits.org/)
+
+## Local Testing
+
+Symlink a skill directory to test with Claude Code directly:
+
+```bash
+ln -s $(pwd)/skills/nfd ~/.claude/skills/nfd
+```
