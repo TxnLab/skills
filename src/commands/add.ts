@@ -1,8 +1,7 @@
 import chalk from 'chalk'
 import { findSkill, discoverSkills } from '../skills.ts'
-import { detectAgents, findAgent } from '../agents.ts'
+import { resolveAgents } from '../agents.ts'
 import { installSkill } from '../installer.ts'
-import type { Agent } from '../types.ts'
 
 export function addCommand(
   skillNames: string[],
@@ -39,6 +38,14 @@ export function addCommand(
     process.exit(1)
   }
 
+  // Show detected agents when auto-detected (no explicit --agent flag)
+  if (!options.agent || options.agent.length === 0) {
+    console.log(chalk.dim('  Detected agents:'))
+    for (const a of targetAgents) {
+      console.log(`  ${chalk.green('✔')} ${a.displayName}`)
+    }
+  }
+
   const isLocal = options.local === true
 
   for (const name of names) {
@@ -56,8 +63,9 @@ export function addCommand(
     for (const agent of targetAgents) {
       const result = installSkill(skill, agent, { local: isLocal })
       if (result.success) {
+        const method = result.method === 'copy' ? chalk.dim(' (copied)') : ''
         console.log(
-          `  ${chalk.green('✔')} ${agent.displayName} — ${result.skillName} → ${result.targetPath}`,
+          `  ${chalk.green('✔')} ${agent.displayName} — ${result.skillName} → ${result.targetPath}${method}`,
         )
       } else {
         console.error(
@@ -68,30 +76,4 @@ export function addCommand(
   }
 
   console.log()
-}
-
-function resolveAgents(agentNames?: string[]): Agent[] {
-  if (agentNames && agentNames.length > 0) {
-    const resolved: Agent[] = []
-    for (const name of agentNames) {
-      const agent = findAgent(name)
-      if (agent) {
-        resolved.push(agent)
-      } else {
-        console.warn(chalk.yellow(`  Unknown agent: "${name}"`))
-      }
-    }
-    return resolved
-  }
-
-  const detected = detectAgents()
-  if (detected.length > 0) {
-    console.log(chalk.dim('  Detected agents:'))
-    for (const a of detected) {
-      console.log(`  ${chalk.green('✔')} ${a.displayName}`)
-    }
-    return detected
-  }
-
-  return []
 }

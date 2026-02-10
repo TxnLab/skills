@@ -14,13 +14,29 @@ export function listCommand(): void {
   console.log()
 
   const maxNameLen = Math.max(...skills.map((s) => s.name.length))
+  const indent = 2
+  const gap = 2
+  const maxDescLen = 80 - indent - maxNameLen - gap
 
   for (const skill of skills) {
-    const name = chalk.cyan(skill.name.padEnd(maxNameLen + 2))
-    console.log(`  ${name}${skill.description}`)
+    const name = chalk.cyan(skill.name.padEnd(maxNameLen + gap))
+    const desc = truncate(skill.description, maxDescLen)
+    console.log(`  ${name}${desc}`)
   }
 
   console.log()
+  console.log(chalk.dim(`  Details: npx @txnlab/skills info <skill-name>`))
   console.log(chalk.dim(`  Install: npx @txnlab/skills add <skill-name>`))
   console.log()
+}
+
+function truncate(text: string, maxLen: number): string {
+  if (maxLen < 4) return text
+  // Truncate at first sentence boundary (period followed by space) within maxLen
+  const period = text.indexOf('. ')
+  if (period >= 0 && period + 1 <= maxLen) {
+    return text.slice(0, period + 1)
+  }
+  if (text.length <= maxLen) return text
+  return text.slice(0, maxLen - 3).trimEnd() + '...'
 }

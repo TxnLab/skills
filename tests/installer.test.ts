@@ -78,14 +78,14 @@ describe('installSkill', () => {
     expect(result.success).toBe(true)
   })
 
-  test('fails if target is a regular directory', () => {
+  test('replaces existing directory (previous copy)', () => {
     const targetPath = join(agentSkillsDir, 'my-skill')
     mkdirSync(targetPath, { recursive: true })
     writeFileSync(join(targetPath, 'file.txt'), 'existing')
 
     const result = installSkill(mockSkill, mockAgent)
-    expect(result.success).toBe(false)
-    expect(result.error).toContain('not a symlink')
+    expect(result.success).toBe(true)
+    expect(lstatSync(targetPath).isSymbolicLink()).toBe(true)
   })
 })
 

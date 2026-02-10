@@ -32,17 +32,10 @@ export function installSkill(
     if (existsSync(targetPath)) {
       const stat = lstatSync(targetPath)
       if (stat.isSymbolicLink()) {
-        // Replace existing symlink
         unlinkSync(targetPath)
       } else {
-        return {
-          success: false,
-          skillName: skill.name,
-          agent,
-          targetPath,
-          method: 'symlink',
-          error: `Target path already exists and is not a symlink: ${targetPath}`,
-        }
+        // Replace existing copy (e.g., from a previous install)
+        rmSync(targetPath, { recursive: true })
       }
     }
 

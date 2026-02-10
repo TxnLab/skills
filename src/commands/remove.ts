@@ -1,10 +1,10 @@
 import chalk from 'chalk'
 import { discoverSkills } from '../skills.ts'
-import { detectAgents, findAgent } from '../agents.ts'
+import { resolveAgents } from '../agents.ts'
 import { uninstallSkill } from '../installer.ts'
-import type { Agent } from '../types.ts'
+import { confirm } from '../prompt.ts'
 
-export function removeCommand(
+export async function removeCommand(
   skillNames: string[],
   options: {
     agent?: string[]
@@ -13,7 +13,7 @@ export function removeCommand(
     all?: boolean
     yes?: boolean
   },
-): void {
+): Promise<void> {
   let names = skillNames
   if (options.all) {
     const allSkills = discoverSkills()
@@ -37,6 +37,18 @@ export function removeCommand(
     process.exit(1)
   }
 
+  if (!options.yes) {
+    const skillList = names.join(', ')
+    const agentList = targetAgents.map((a) => a.displayName).join(', ')
+    const confirmed = await confirm(
+      `Remove ${options.all ? 'all skills' : skillList} from ${agentList}?`,
+    )
+    if (!confirmed) {
+      console.log(chalk.dim('Cancelled.'))
+      return
+    }
+  }
+
   const isLocal = options.local === true
 
   for (const name of names) {
@@ -55,21 +67,4 @@ export function removeCommand(
   }
 
   console.log()
-}
-
-function resolveAgents(agentNames?: string[]): Agent[] {
-  if (agentNames && agentNames.length > 0) {
-    const resolved: Agent[] = []
-    for (const name of agentNames) {
-      const agent = findAgent(name)
-      if (agent) {
-        resolved.push(agent)
-      } else {
-        console.warn(chalk.yellow(`  Unknown agent: "${name}"`))
-      }
-    }
-    return resolved
-  }
-
-  return detectAgents()
 }
