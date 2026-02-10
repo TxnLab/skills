@@ -1,71 +1,14 @@
 {
   "name": "@txnlab/skills",
-  "version": "1.1.0",
-  "description": "Agent skills for TxnLab's Algorand ecosystem",
+  "private": true,
   "type": "module",
-  "bin": {
-    "txnlab-skills": "./dist/cli.js"
-  },
-  "files": [
-    "dist",
-    "skills"
-  ],
-  "scripts": {
-    "build": "bun build src/cli.ts --outdir dist --target node",
-    "dev": "bun run src/cli.ts",
-    "test": "bun test",
-    "lint": "eslint . && prettier --check .",
-    "lint:fix": "eslint --fix . && prettier --write .",
-    "validate": "bun run src/cli.ts validate",
-    "publint": "publint"
-  },
-  "publishConfig": {
-    "access": "public",
-    "provenance": true
-  },
+  "description": "Agent skills for TxnLab's Algorand ecosystem",
   "license": "MIT",
-  "homepage": "https://github.com/TxnLab/skills#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TxnLab/skills.git"
+    "url": "https://github.com/TxnLab/skills.git"
   },
-  "engines": {
-    "node": ">=18"
-  },
-  "keywords": [
-    "agent-skills",
-    "algorand",
-    "txnlab",
-    "nfd",
-    "use-wallet",
-    "haystack",
-    "claude-code",
-    "codex",
-    "cursor",
-    "opencode",
-    "ai-agent"
-  ],
-  "devDependencies": {
-    "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/commit-analyzer": "^13.0.1",
-    "@semantic-release/git": "^10.0.1",
-    "@semantic-release/github": "^12.0.5",
-    "@semantic-release/npm": "^13.1.4",
-    "@semantic-release/release-notes-generator": "^14.1.0",
-    "@types/bun": "latest",
-    "eslint": "^9",
-    "eslint-config-prettier": "^10",
-    "jiti": "^2.6.1",
-    "prettier": "^3",
-    "publint": "^0.3.17",
-    "semantic-release": "^25.0.3",
-    "typescript": "^5",
-    "typescript-eslint": "^8"
-  },
-  "dependencies": {
-    "chalk": "^5",
-    "commander": "^13",
-    "gray-matter": "^4",
-    "wrap-ansi": "^9.0.2"
+  "scripts": {
+    "validate": "node scripts/validate.js"
   }
 }
