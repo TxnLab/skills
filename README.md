@@ -87,16 +87,16 @@ npx @txnlab/skills dev unlink --all         # Remove dev symlinks
 
 ### Flags
 
-| Flag                  | Commands              | Description                                    |
-| --------------------- | --------------------- | ---------------------------------------------- |
-| `-a, --agent <agent>` | add, remove, dev      | Target specific agent (repeatable)             |
-| `-g, --global`        | add, remove           | Use global skill directory (default)           |
-| `-l, --local`         | add, remove           | Use project-level skill directory              |
-| `--all`               | add, remove, dev      | Apply to all skills                            |
-| `--force`             | dev link              | Overwrite existing non-symlink targets         |
-| `-y, --yes`           | remove                | Skip confirmation prompts                      |
-| `-v, --version`       | (global)              | Show version                                   |
-| `-h, --help`          | (all)                 | Show help                                      |
+| Flag                  | Commands         | Description                            |
+| --------------------- | ---------------- | -------------------------------------- |
+| `-a, --agent <agent>` | add, remove, dev | Target specific agent (repeatable)     |
+| `-g, --global`        | add, remove      | Use global skill directory (default)   |
+| `-l, --local`         | add, remove      | Use project-level skill directory      |
+| `--all`               | add, remove, dev | Apply to all skills                    |
+| `--force`             | dev link         | Overwrite existing non-symlink targets |
+| `-y, --yes`           | remove           | Skip confirmation prompts              |
+| `-v, --version`       | (global)         | Show version                           |
+| `-h, --help`          | (all)            | Show help                              |
 
 ## Installation
 
