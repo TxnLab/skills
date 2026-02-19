@@ -30,11 +30,12 @@ The validation script (`scripts/validate.js`) checks frontmatter structure using
 
 ## Current Skills
 
-| Skill | Package |
+| Skill | Description |
 | --- | --- |
 | `nfd` | `@txnlab/nfd-sdk` — Algorand Name Service (.algo domains) |
 | `use-wallet` | `@txnlab/use-wallet` v4.x — Multi-framework wallet connections |
 | `haystack-router` | `@txnlab/haystack-router` — DEX aggregator and swap routing |
+| `haystack-agent-trader` | Autonomous trading workflow — wallet setup, swaps, balances |
 
 ## Adding a New Skill
 

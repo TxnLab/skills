@@ -1,12 +1,5 @@
 # API Reference
 
-## Table of Contents
-
-- [RouterClient](#routerclient)
-- [SwapComposer](#swapcomposer)
-- [SwapMiddleware](#swapmiddleware)
-- [Types](#types)
-
 ## RouterClient
 
 ### Constructor
@@ -15,19 +8,7 @@
 new RouterClient(config: ConfigParams & { middleware?: SwapMiddleware[] })
 ```
 
-**ConfigParams:**
-
-| Property          | Type               | Default        | Description                              |
-| ----------------- | ------------------ | -------------- | ---------------------------------------- |
-| `apiKey`          | `string`           | —              | **Required.** API key                    |
-| `apiBaseUrl`      | `string`           | SDK default    | API endpoint override                    |
-| `algodUri`        | `string`           | MainNet Nodely | Algod node URI                           |
-| `algodToken`      | `string`           | `''`           | Algod node token                         |
-| `algodPort`       | `string \| number` | `443`          | Algod node port                          |
-| `referrerAddress` | `string`           | —              | Earn 25% of swap fees                    |
-| `feeBps`          | `number`           | `10`           | Fee in basis points (10–300)             |
-| `autoOptIn`       | `boolean`          | `false`        | Auto-detect asset opt-in                 |
-| `debugLevel`      | `string`           | `'none'`       | `'none' \| 'info' \| 'debug' \| 'trace'` |
+See [configuration.md](configuration.md) for all options.
 
 ### newQuote()
 
@@ -35,7 +16,7 @@ new RouterClient(config: ConfigParams & { middleware?: SwapMiddleware[] })
 async newQuote(params: FetchQuoteParams): Promise<SwapQuote>
 ```
 
-Get an optimized swap quote with enhanced types (bigint coercion, timestamps).
+Get an optimized swap quote with bigint coercion and timestamps.
 
 ### fetchQuote()
 
@@ -57,23 +38,13 @@ async newSwap(config: {
 }): Promise<SwapComposer>
 ```
 
-Create a swap composer for building and executing the swap transaction group.
-
 ### needsAssetOptIn()
 
 ```typescript
 async needsAssetOptIn(address: string, assetId: number | bigint): Promise<boolean>
 ```
 
-Check if an address needs to opt into an asset. Always returns `false` for ALGO (ASA 0).
-
-### fetchSwapTransactions()
-
-```typescript
-async fetchSwapTransactions(params: FetchSwapTxnsParams): Promise<FetchSwapTxnsResponse>
-```
-
-Low-level: fetch executable swap transactions. Typically called internally by `newSwap()`.
+Returns `false` for ALGO (ASA 0).
 
 ---
 
@@ -99,15 +70,11 @@ Sign, submit, and wait for confirmation. `waitRounds` defaults to 10.
 buildGroup(): TransactionWithSigner[]
 ```
 
-Finalize the transaction group and assign group IDs.
-
 ### sign()
 
 ```typescript
 async sign(): Promise<Uint8Array[]>
 ```
-
-Sign all transactions. Auto-adds swap transactions if not already added.
 
 ### submit()
 
@@ -115,7 +82,7 @@ Sign all transactions. Auto-adds swap transactions if not already added.
 async submit(): Promise<string[]>
 ```
 
-Sign and submit without waiting for confirmation. Returns transaction IDs.
+Sign and submit without waiting. Returns transaction IDs.
 
 ### addTransaction()
 
@@ -123,15 +90,11 @@ Sign and submit without waiting for confirmation. Returns transaction IDs.
 addTransaction(transaction: Transaction, signer?: TransactionSigner): this
 ```
 
-Add a custom transaction to the group. Chainable. Must be called before `buildGroup()`.
-
 ### addMethodCall()
 
 ```typescript
 addMethodCall(methodCall: MethodCall, signer?: TransactionSigner): this
 ```
-
-Add an ABI method call to the group. Chainable.
 
 ### addSwapTransactions()
 
@@ -139,7 +102,7 @@ Add an ABI method call to the group. Chainable.
 async addSwapTransactions(): Promise<this>
 ```
 
-Manually add swap transactions (including middleware hooks and app opt-ins). Called automatically by `execute()` if not called explicitly.
+Manually add swap transactions (called automatically by `execute()` if omitted).
 
 ### getSummary()
 
@@ -147,7 +110,7 @@ Manually add swap transactions (including middleware hooks and app opt-ins). Cal
 getSummary(): SwapSummary | undefined
 ```
 
-Get exact swap amounts after execution. Only available after `execute()`.
+Only available after `execute()`.
 
 ### getInputTransactionId()
 
@@ -155,15 +118,14 @@ Get exact swap amounts after execution. Only available after `execute()`.
 getInputTransactionId(): string | undefined
 ```
 
-Get the user-signed input transaction ID. Available after `buildGroup()`.
+Available after `buildGroup()`.
 
 ### getStatus()
 
 ```typescript
 getStatus(): SwapComposerStatus
+// BUILDING (0) → BUILT (1) → SIGNED (2) → SUBMITTED (3) → COMMITTED (4)
 ```
-
-Returns: `BUILDING` (0) → `BUILT` (1) → `SIGNED` (2) → `SUBMITTED` (3) → `COMMITTED` (4)
 
 ### count()
 
@@ -171,19 +133,14 @@ Returns: `BUILDING` (0) → `BUILT` (1) → `SIGNED` (2) → `SUBMITTED` (3) →
 count(): number
 ```
 
-Number of transactions in the group.
-
 ---
 
 ## SwapMiddleware
-
-Interface for plugins that hook into the quote and swap lifecycle.
 
 ```typescript
 interface SwapMiddleware {
   readonly name: string
   readonly version: string
-
   shouldApply(context: QuoteContext): Promise<boolean>
   adjustQuoteParams?(params: FetchQuoteParams): Promise<FetchQuoteParams>
   beforeSwap?(context: SwapContext): Promise<TransactionWithSigner[]>
@@ -193,41 +150,12 @@ interface SwapMiddleware {
 
 ### Built-in: AutoOptOutMiddleware
 
-Automatically opts out of assets when swapping full balance.
-
 ```typescript
 import { AutoOptOutMiddleware } from '@txnlab/haystack-router'
 
-const middleware = new AutoOptOutMiddleware({
-  excludedAssets?: readonly (number | bigint)[]  // Assets to never auto-opt-out
+new AutoOptOutMiddleware({
+  excludedAssets?: readonly (number | bigint)[]
 })
-```
-
-### QuoteContext
-
-```typescript
-interface QuoteContext {
-  fromASAID: bigint
-  toASAID: bigint
-  amount: bigint
-  type: QuoteType
-  address?: string
-  algodClient: Algodv2
-}
-```
-
-### SwapContext
-
-```typescript
-interface SwapContext {
-  quote: SwapQuote
-  address: string
-  algodClient: Algodv2
-  suggestedParams: SuggestedParams
-  fromASAID: bigint
-  toASAID: bigint
-  signer: TransactionSigner
-}
 ```
 
 ---
@@ -241,35 +169,12 @@ interface FetchQuoteParams {
   fromASAID: bigint | number
   toASAID: bigint | number
   amount: bigint | number
-  type?: 'fixed-input' | 'fixed-output' // Default: 'fixed-input'
+  type?: 'fixed-input' | 'fixed-output'
   address?: string | null
   disabledProtocols?: readonly Protocol[]
-  maxGroupSize?: number // Default: 16
-  maxDepth?: number // Default: 4
+  maxGroupSize?: number   // Default: 16
+  maxDepth?: number       // Default: 4
   optIn?: boolean
-}
-```
-
-### FetchQuoteResponse
-
-```typescript
-interface FetchQuoteResponse {
-  quote: string | number
-  profit: Profit // { amount: number, asa: Asset }
-  priceBaseline: number
-  userPriceImpact?: number
-  marketPriceImpact?: number
-  usdIn: number
-  usdOut: number
-  route: Route[]
-  flattenedRoute: Record<string, number>
-  quotes: DexQuote[]
-  requiredAppOptIns: number[]
-  txnPayload: TxnPayload | null
-  protocolFees: Record<string, number>
-  fromASAID: number
-  toASAID: number
-  type: string
 }
 ```
 
@@ -277,10 +182,10 @@ interface FetchQuoteResponse {
 
 ```typescript
 type SwapQuote = FetchQuoteResponse & {
-  quote: bigint // Coerced to bigint
-  amount: bigint // Original request amount
+  quote: bigint
+  amount: bigint
   address?: string
-  createdAt: number // Timestamp (ms)
+  createdAt: number
 }
 ```
 
@@ -293,23 +198,10 @@ interface SwapSummary {
   inputAmount: bigint
   outputAmount: bigint
   type: QuoteType
-  totalFees: bigint // microAlgos
+  totalFees: bigint        // microAlgos
   transactionCount: number
   inputTxnId: string
   outputTxnId: string
-  inputSender: string
-  outputSender: string
-}
-```
-
-### SwapTransaction
-
-```typescript
-interface SwapTransaction {
-  data: string // Base64-encoded transaction
-  group: string // Group ID
-  logicSigBlob: unknown | false
-  signature: Signature | false
 }
 ```
 
@@ -322,12 +214,7 @@ type SignerFunction = (
 ) => Promise<(Uint8Array | null)[]>
 ```
 
-Supports two return patterns:
-
-- `Uint8Array[]` matching `indexesToSign` length (Pera/Defly)
-- `(Uint8Array | null)[]` matching full group length (Lute/ARC-1)
-
-### Route and PathElement
+### Route
 
 ```typescript
 interface Route {
@@ -336,22 +223,16 @@ interface Route {
 }
 
 interface PathElement {
-  name: string // Protocol name + fee tier
-  class: string[][]
+  name: string
   in: Asset
   out: Asset
 }
-```
 
-### Asset
-
-```typescript
 interface Asset {
   id: number
   decimals: number
   unit_name: string
   name: string
-  price_algo: number
   price_usd: number
 }
 ```
@@ -361,21 +242,8 @@ interface Asset {
 ```typescript
 enum Protocol {
   TinymanV2 = 'TinymanV2'
-  Algofi = 'Algofi'
-  Algomint = 'Algomint'
   Pact = 'Pact'
   Folks = 'Folks'
   TAlgo = 'TAlgo'
 }
-```
-
-### Constants
-
-```typescript
-const DEFAULT_FEE_BPS = 10 // 0.10%
-const MAX_FEE_BPS = 300 // 3.00%
-const DEFAULT_MAX_GROUP_SIZE = 16
-const DEFAULT_MAX_DEPTH = 4
-const DEFAULT_AUTO_OPT_IN = false
-const DEFAULT_CONFIRMATION_ROUNDS = 10
 ```

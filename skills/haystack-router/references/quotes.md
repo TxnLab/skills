@@ -3,16 +3,10 @@
 ## Getting a Quote
 
 ```typescript
-import { RouterClient } from '@txnlab/haystack-router'
-
-const router = new RouterClient({
-  apiKey: '1b72df7e-1131-4449-8ce1-29b79dd3f51e', // Free tier (60 requests/min)
-})
-
 const quote = await router.newQuote({
-  fromASAID: 0, // ALGO
-  toASAID: 31566704, // USDC
-  amount: 1_000_000, // 1 ALGO in base units
+  fromASAID: 0,          // ALGO
+  toASAID: 31566704,     // USDC
+  amount: 1_000_000,     // 1 ALGO in base units
   address: activeAddress,
 })
 ```
@@ -33,32 +27,25 @@ const quote = await router.newQuote({
 
 ## Quote Response (SwapQuote)
 
-`newQuote()` returns a `SwapQuote` (extends `FetchQuoteResponse`):
-
 ```typescript
-quote.quote // bigint — expected output amount in base units
-quote.amount // bigint — original input amount
-quote.usdIn // number — USD value of input
-quote.usdOut // number — USD value of output
-quote.userPriceImpact // number | undefined — price impact %
-quote.marketPriceImpact // number | undefined — market price impact %
-quote.route // Route[] — routing path details
-quote.flattenedRoute // Record<string, number> — protocol split percentages
-quote.quotes // DexQuote[] — individual DEX quotes
-quote.requiredAppOptIns // number[] — app IDs needing opt-in
-quote.createdAt // number — timestamp (ms)
-quote.address // string | undefined — user address if provided
+quote.quote              // bigint — expected output amount in base units
+quote.amount             // bigint — original input amount
+quote.usdIn              // number — USD value of input
+quote.usdOut             // number — USD value of output
+quote.userPriceImpact    // number | undefined — price impact %
+quote.flattenedRoute     // Record<string, number> — protocol split percentages
+quote.route              // Route[] — routing path details
+quote.requiredAppOptIns  // number[] — app IDs needing opt-in
+quote.createdAt          // number — timestamp (ms)
 ```
 
 ## Quote Types
 
-**Fixed-input** (default): Specify exact input amount, receive variable output.
+**Fixed-input** (default): Specify exact input, receive variable output.
 
 ```typescript
 const quote = await router.newQuote({
-  fromASAID: 0,
-  toASAID: 31566704,
-  amount: 1_000_000, // Exact: send 1 ALGO
+  fromASAID: 0, toASAID: 31566704, amount: 1_000_000,
   type: 'fixed-input',
 })
 // quote.quote = expected USDC received
@@ -68,9 +55,7 @@ const quote = await router.newQuote({
 
 ```typescript
 const quote = await router.newQuote({
-  fromASAID: 0,
-  toASAID: 31566704,
-  amount: 1_000_000, // Exact: receive 1 USDC
+  fromASAID: 0, toASAID: 31566704, amount: 1_000_000,
   type: 'fixed-output',
 })
 // quote.quote = ALGO required to send
@@ -79,9 +64,6 @@ const quote = await router.newQuote({
 ## Displaying Quote Data
 
 ```typescript
-const fromDecimals = 6 // ALGO
-const toDecimals = 6 // USDC
-
 const outputHuman = Number(quote.quote) / 10 ** toDecimals
 const inputHuman = Number(quote.amount) / 10 ** fromDecimals
 const rate = outputHuman / inputHuman
@@ -89,7 +71,6 @@ const rate = outputHuman / inputHuman
 console.log(`${inputHuman} ALGO → ${outputHuman} USDC`)
 console.log(`Rate: 1 ALGO = ${rate.toFixed(4)} USDC`)
 console.log(`USD in: $${quote.usdIn.toFixed(2)}`)
-console.log(`USD out: $${quote.usdOut.toFixed(2)}`)
 
 if (quote.userPriceImpact !== undefined) {
   console.log(`Price impact: ${quote.userPriceImpact.toFixed(2)}%`)
@@ -98,14 +79,11 @@ if (quote.userPriceImpact !== undefined) {
 
 ## Route Details
 
-Each quote includes routing information showing how the swap is split:
-
 ```typescript
 // Flattened view: protocol → percentage
 for (const [protocol, pct] of Object.entries(quote.flattenedRoute)) {
   console.log(`${protocol}: ${pct}%`)
 }
-// e.g., "TinymanV2: 60%", "Pact: 40%"
 
 // Detailed route with hops
 for (const route of quote.route) {
@@ -116,42 +94,6 @@ for (const route of quote.route) {
 }
 ```
 
-## Asset Opt-In Detection
-
-Before quoting, check if the user needs to opt into the output asset:
-
-```typescript
-// Option 1: Set autoOptIn on the client
-const router = new RouterClient({
-  apiKey: '1b72df7e-1131-4449-8ce1-29b79dd3f51e', // Free tier (60 requests/min)
-  autoOptIn: true,
-})
-const quote = await router.newQuote({
-  fromASAID: 0,
-  toASAID: 31566704,
-  amount: 1_000_000,
-  address: activeAddress, // Required for auto opt-in
-})
-
-// Option 2: Check manually and pass optIn flag
-const needsOptIn = await router.needsAssetOptIn(activeAddress, 31566704)
-const quote = await router.newQuote({
-  fromASAID: 0,
-  toASAID: 31566704,
-  amount: 1_000_000,
-  optIn: needsOptIn,
-})
-```
-
 ## Lower-Level: fetchQuote()
 
-`fetchQuote()` returns the raw `FetchQuoteResponse` without `SwapQuote` enhancements (no bigint coercion, no `createdAt`). Use `newQuote()` unless you need the raw response.
-
-```typescript
-const raw = await router.fetchQuote({
-  fromASAID: 0,
-  toASAID: 31566704,
-  amount: 1_000_000,
-})
-// raw.quote is string | number (not bigint)
-```
+`fetchQuote()` returns the raw `FetchQuoteResponse` without bigint coercion or `createdAt`. Use `newQuote()` unless you need the raw response.

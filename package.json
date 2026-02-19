@@ -10,5 +10,10 @@
   },
   "scripts": {
     "validate": "node scripts/validate.js"
+  },
+  "dependencies": {
+    "@txnlab/haystack-router": "^2.0.5",
+    "algosdk": "^3.5.2",
+    "qrcode-terminal": "^0.12.0"
   }
 }

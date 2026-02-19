@@ -1,15 +1,21 @@
 # Configuration
 
-## API Key Tiers
+## API Key
 
-| Tier           | Key                                    | Rate Limit      | Use Case                                      |
-| -------------- | -------------------------------------- | --------------- | --------------------------------------------- |
-| **Free**       | `1b72df7e-1131-4449-8ce1-29b79dd3f51e` | 60 requests/min | Development, testing, low-volume integrations |
-| **Production** | Request from support@txnlab.dev        | Higher limits   | Production applications                       |
+| Tier           | Key                                    | Rate Limit      |
+| -------------- | -------------------------------------- | --------------- |
+| **Free**       | `1b72df7e-1131-4449-8ce1-29b79dd3f51e` | 60 requests/min |
+| **Production** | Request from support@txnlab.dev        | Higher limits   |
 
-The free tier key requires no registration and works immediately. The rate limit applies to all API calls (both `fetchQuote` and `fetchExecuteSwapTxns`), not just quotes.
+The free tier key requires no registration and works immediately.
 
-For production integrations with higher rate limits, contact support@txnlab.dev for a dedicated key.
+## Installation
+
+```bash
+npm install @txnlab/haystack-router algosdk
+```
+
+Requires Node.js >= 20 and algosdk 3.x (peer dependency).
 
 ## RouterClient Options
 
@@ -17,114 +23,52 @@ For production integrations with higher rate limits, contact support@txnlab.dev 
 import { RouterClient } from '@txnlab/haystack-router'
 
 const router = new RouterClient({
-  // Required
-  apiKey: '1b72df7e-1131-4449-8ce1-29b79dd3f51e', // Free tier (60 requests/min)
+  apiKey: '1b72df7e-1131-4449-8ce1-29b79dd3f51e',
 
   // Optional
-  apiBaseUrl: undefined, // Override API endpoint (SDK manages defaults)
-  algodUri: undefined, // Algod node URI (default: MainNet via Nodely)
-  algodToken: undefined, // Algod node token
-  algodPort: undefined, // Algod node port (default: 443)
+  algodUri: undefined,        // Algod node URI (default: MainNet via Nodely)
+  algodToken: undefined,      // Algod node token
+  algodPort: undefined,       // Algod node port (default: 443)
+  autoOptIn: false,           // Auto-detect asset opt-in needs
   referrerAddress: undefined, // Earn 25% of swap fees
-  feeBps: undefined, // Fee in basis points (default: 10, max: 300)
-  autoOptIn: false, // Auto-detect asset opt-in needs
-  debugLevel: 'none', // Logging: 'none' | 'info' | 'debug' | 'trace'
-  middleware: [], // SwapMiddleware plugins
+  feeBps: undefined,          // Fee in basis points (default: 10, max: 300)
+  debugLevel: 'none',         // 'none' | 'info' | 'debug' | 'trace'
+  middleware: [],              // SwapMiddleware plugins
 })
 ```
 
 ## Network Configuration
 
-### MainNet (Default)
+MainNet is the default. For TestNet, override `algodUri`:
 
 ```typescript
 const router = new RouterClient({
-  apiKey: '1b72df7e-1131-4449-8ce1-29b79dd3f51e',
-})
-```
-
-Uses default Nodely MainNet algod endpoint.
-
-### TestNet
-
-```typescript
-const router = new RouterClient({
-  apiKey: '1b72df7e-1131-4449-8ce1-29b79dd3f51e', // Free tier (60 requests/min)
+  apiKey,
   algodUri: 'https://testnet-api.4160.nodely.dev/',
-})
-```
-
-### Custom Algod Node
-
-```typescript
-const router = new RouterClient({
-  apiKey: '1b72df7e-1131-4449-8ce1-29b79dd3f51e', // Free tier (60 requests/min)
-  algodUri: 'http://localhost:4001',
-  algodToken:
-    'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-  algodPort: 4001,
 })
 ```
 
 ## Slippage
 
-Slippage is a percentage tolerance on the output amount. Set per-swap, not on the client.
+Set per-swap, not on the client. Percentage tolerance on the **final output** amount.
 
 ```typescript
-const swap = await router.newSwap({
-  quote,
-  address,
-  signer,
-  slippage: 1, // 1% — receive at least 99% of quoted output
-})
+const swap = await router.newSwap({ quote, address, signer, slippage: 1 })
 ```
 
-**Recommendations:**
-
-- **Stable pairs** (ALGO/USDC): 0.5–1%
-- **Volatile pairs**: 1–3%
-- **Low liquidity**: 3–5%
-
-Slippage is verified on the **final output** of the swap, not on individual hops. This means intermediate steps can have higher variance as long as the final result is within tolerance.
-
-## Fee Configuration
-
-```typescript
-const router = new RouterClient({
-  apiKey: '1b72df7e-1131-4449-8ce1-29b79dd3f51e', // Free tier (60 requests/min)
-  feeBps: 15, // 0.15% output fee
-})
-```
-
-- **Default**: 10 bps (0.10%)
-- **Range**: 10–300 bps (0.10%–3.00%)
-- Fee is applied to the **output amount**
-- Additional network transaction fees apply (paid by swapper)
-
-## Referrer Address
-
-Earn 25% of swap fees by setting a referrer address:
-
-```typescript
-const router = new RouterClient({
-  apiKey: '1b72df7e-1131-4449-8ce1-29b79dd3f51e', // Free tier (60 requests/min)
-  referrerAddress: 'YOUR_ALGORAND_ADDRESS',
-})
-```
-
-See [fees-and-referrals.md](fees-and-referrals.md) for details on the referral program.
+| Pair type       | Recommended |
+| --------------- | ----------- |
+| Stable (ALGO/USDC) | 0.5–1%  |
+| Volatile        | 1–3%        |
+| Low liquidity   | 3–5%        |
 
 ## Auto Opt-In
 
-When `autoOptIn: true`, the SDK automatically checks if the user needs to opt into the output asset and includes the opt-in transaction in the swap group.
+When `autoOptIn: true`, the SDK includes asset opt-in transactions in the swap group automatically. Requires `address` in the quote request.
 
 ```typescript
-const router = new RouterClient({
-  apiKey: '1b72df7e-1131-4449-8ce1-29b79dd3f51e', // Free tier (60 requests/min)
-  autoOptIn: true,
-})
+const router = new RouterClient({ apiKey, autoOptIn: true })
 
-// Address is required for auto opt-in detection
 const quote = await router.newQuote({
   fromASAID: 0,
   toASAID: 31566704,
@@ -133,52 +77,39 @@ const quote = await router.newQuote({
 })
 ```
 
-## Middleware
+## Fees
 
-Plugins that hook into the quote and swap lifecycle:
+- **Default**: 10 bps (0.10%) on the output amount
+- **Range**: 10–300 bps
+- **Referrer**: Set `referrerAddress` to earn 25% of swap fees
+- Network transaction fees are separate (paid by swapper)
+
+## Middleware
 
 ```typescript
 import { RouterClient, AutoOptOutMiddleware } from '@txnlab/haystack-router'
 
-// Built-in: auto opt-out when swapping full balance
-const autoOptOut = new AutoOptOutMiddleware({
-  excludedAssets: [31566704], // Never auto-opt-out of USDC
-})
-
 const router = new RouterClient({
-  apiKey: '1b72df7e-1131-4449-8ce1-29b79dd3f51e', // Free tier (60 requests/min)
-  middleware: [autoOptOut],
+  apiKey,
+  middleware: [
+    new AutoOptOutMiddleware({ excludedAssets: [31566704] }),
+  ],
 })
 ```
 
 See [api-reference.md](api-reference.md) for the `SwapMiddleware` interface.
 
-## Debug Logging
+## Amounts and Units
+
+All amounts are in **base units** (smallest denomination):
+
+| Asset        | Decimals | 1 unit in base | Example              |
+| ------------ | -------- | -------------- | -------------------- |
+| ALGO (ASA 0) | 6        | 1,000,000      | `1_000_000` = 1 ALGO |
+| USDC         | 6        | 1,000,000      | `5_000_000` = 5 USDC |
 
 ```typescript
-const router = new RouterClient({
-  apiKey: '1b72df7e-1131-4449-8ce1-29b79dd3f51e', // Free tier (60 requests/min)
-  debugLevel: 'info',
-})
+const amount = BigInt(Math.floor(parseFloat(userInput) * 10 ** decimals))
 ```
 
-| Level   | Output                                                             |
-| ------- | ------------------------------------------------------------------ |
-| `none`  | No logging (default)                                               |
-| `info`  | High-level operations (quote fetched, swap submitted)              |
-| `debug` | Detailed flow (middleware applied, validation, status transitions) |
-| `trace` | Everything including request/response payloads                     |
-
-## Finding ASA IDs
-
-Common Algorand Standard Asset IDs:
-
-| Asset | ASA ID    |
-| ----- | --------- |
-| ALGO  | 0         |
-| USDC  | 31566704  |
-| USDt  | 312769    |
-| goBTC | 386192725 |
-| goETH | 386195940 |
-
-Look up ASA IDs on [Allo.info](https://allo.info) or [Pera Explorer](https://explorer.perawallet.app/).
+See [assets.md](assets.md) for common ASA IDs and lookup methods.
