@@ -119,22 +119,45 @@ const closeTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
 
 Group the opt-out and close transactions into a single atomic group with `algosdk.assignGroupID()` for efficiency.
 
+## Strategies
+
+Run autonomous trading strategies with a single config file:
+
+```bash
+node scripts/strategy.mjs --config accumulate-hay.json --dry-run
+```
+
+Two strategy types are supported:
+
+- **`accumulate`** — Swing trade between two assets using mean reversion to gain more of one
+- **`dca`** — Dollar-cost average into a target asset at regular intervals
+
+All strategies enforce safety limits (max trades, max loss %, time limit, ALGO reserve) and log every action to a JSONL trade journal.
+
+See [strategies.md](references/strategies.md) for config format, examples, and tuning guidance. See [trade-journal.md](references/trade-journal.md) for journal format and P&L analysis.
+
 ## Runnable Scripts
 
 The `scripts/` directory contains ready-to-run tools:
 
-| Script             | Purpose                             |
-| ------------------ | ----------------------------------- |
-| `setup_wallet.mjs` | Generate account, save to .env      |
-| `swap.mjs`         | Execute a swap with full opt-in     |
-| `balances.mjs`     | Check all account balances          |
-| `price_check.mjs`  | Get a quote without executing       |
+| Script              | Purpose                                  |
+| ------------------- | ---------------------------------------- |
+| `setup_wallet.mjs`  | Generate account, save to .env           |
+| `swap.mjs`          | Execute a swap with full opt-in          |
+| `balances.mjs`      | Check all account balances               |
+| `price_check.mjs`   | Get a quote without executing            |
+| `send.mjs`          | Send ALGO or ASA to an address           |
+| `close_account.mjs` | Opt out of all assets, close account     |
+| `strategy.mjs`      | Run an autonomous trading strategy       |
 
 ```bash
 node scripts/setup_wallet.mjs --network mainnet
 node scripts/swap.mjs --from 0 --to 3160000000 --amount 500000
 node scripts/balances.mjs
 node scripts/price_check.mjs --from 0 --to 3160000000 --amount 500000
+node scripts/send.mjs --to ADDR... --asset 0 --amount 1000000
+node scripts/close_account.mjs --to ADDR...
+node scripts/strategy.mjs --config strategy.json
 ```
 
 ## Minimum Balance
@@ -157,8 +180,10 @@ See [key-management.md](references/key-management.md) for detailed guidance.
 
 ## References
 
-| Topic                  | File                                              |
-| ---------------------- | ------------------------------------------------- |
-| Key security, storage  | [key-management.md](references/key-management.md) |
-| SDK API, quotes, swaps | See **haystack-router** skill                     |
-| Common ASA IDs         | See **haystack-router** skill → assets.md         |
+| Topic                    | File                                                |
+| ------------------------ | --------------------------------------------------- |
+| Strategy config & tuning | [strategies.md](references/strategies.md)           |
+| Trade journal & P&L      | [trade-journal.md](references/trade-journal.md)     |
+| Key security, storage    | [key-management.md](references/key-management.md)   |
+| SDK API, quotes, swaps   | See **haystack-router** skill                       |
+| Common ASA IDs           | See **haystack-router** skill → assets.md           |
